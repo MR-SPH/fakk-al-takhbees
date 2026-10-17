@@ -74,9 +74,18 @@ function conv(text,toAr){
   for(let i=0;i<cs.length;i++){
     let c=cs[i];
     if(toAr){
-      // Treat uppercase English letters like their lowercase equivalents (ignore shift)
-      const lookup = (c in E2A) ? c : c.toLowerCase();
-      if(lookup in E2A){
+      // If this is an ASCII uppercase letter, force lookup on its lowercase form.
+      // This avoids using the SHFT mapping entries (which map shifted US keys to diacritics)
+      // when the user simply typed with Shift/CAPS Lock to produce a capital letter.
+      let lookup;
+      if (/^[A-Z]$/.test(c)) {
+        lookup = c.toLowerCase();
+      } else {
+        // prefer exact key match (covers digits and explicit shifted symbols),
+        // otherwise fall back to lowercase to tolerate accidental Shift.
+        lookup = (c in E2A) ? c : c.toLowerCase();
+      }
+      if (lookup in E2A) {
         out += E2A[lookup];
       } else {
         out += c; flag(c);
