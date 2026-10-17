@@ -71,21 +71,33 @@ function conv(text,toAr){
   let out="",lig=0;const bad={};
   const flag=c=>{if(!KEEP.has(c)&&!/\s/.test(c))bad[c]=(bad[c]||0)+1};
   const cs=[...text];
+  // helper vars for shifted->unshifted mapping
+  const usNorm = NORM[0];
+  const usShift = SHFT[0];
   for(let i=0;i<cs.length;i++){
     let c=cs[i];
     if(toAr){
-      // If this is an ASCII uppercase letter, force lookup on its lowercase form.
-      // This avoids using the SHFT mapping entries (which map shifted US keys to diacritics)
-      // when the user simply typed with Shift/CAPS Lock to produce a capital letter.
-      let lookup;
-      if (/^[A-Z]$/.test(c)) {
+      // Try multiple lookup strategies in order:
+      // 1) exact character (covers digits and explicit symbols)
+      // 2) ASCII uppercase -> lowercase (covers CAPS Lock)
+      // 3) lowercase fallback
+      // 4) if still not found, see if the char is a US-shifted key and map it to the unshifted key
+      let lookup = null;
+      if (c in E2A) {
+        lookup = c;
+      } else if (/^[A-Z]$/.test(c) && (c.toLowerCase() in E2A)) {
+        lookup = c.toLowerCase();
+      } else if (c.toLowerCase() in E2A) {
         lookup = c.toLowerCase();
       } else {
-        // prefer exact key match (covers digits and explicit shifted symbols),
-        // otherwise fall back to lowercase to tolerate accidental Shift.
-        lookup = (c in E2A) ? c : c.toLowerCase();
+        const idx = usShift.indexOf(c);
+        if (idx !== -1) {
+          const base = usNorm[idx];
+          if (base in E2A) lookup = base;
+        }
       }
-      if (lookup in E2A) {
+
+      if (lookup) {
         out += E2A[lookup];
       } else {
         out += c; flag(c);
