@@ -72,9 +72,15 @@ function conv(text,toAr){
   const flag=c=>{if(!KEEP.has(c)&&!/\s/.test(c))bad[c]=(bad[c]||0)+1};
   const cs=[...text];
   for(let i=0;i<cs.length;i++){
-    const c=cs[i];
+    let c=cs[i];
     if(toAr){
-      if(c in E2A){out+=E2A[c]}else{out+=c;flag(c)}
+      // Treat uppercase English letters like their lowercase equivalents (ignore shift)
+      const lookup = (c in E2A) ? c : c.toLowerCase();
+      if(lookup in E2A){
+        out += E2A[lookup];
+      } else {
+        out += c; flag(c);
+      }
       continue;
     }
     const two=c+(cs[i+1]||"");
