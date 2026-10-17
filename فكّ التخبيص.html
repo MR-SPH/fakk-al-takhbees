@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>فكّ التخبيص</title>
+<style>
+:root{color-scheme:dark;--bg:#13151a;--p:#1b1e25;--p2:#232731;--ln:#2d323d;--tx:#e9ebf0;--mu:#979eac;--ac:#f0b34a;--ai:#1b1405;--wr:#f08a4b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.7 "Segoe UI","Noto Sans Arabic",Tahoma,system-ui,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 16px 44px}
+header{text-align:center;margin-bottom:28px}
+.tag{display:inline-block;font:600 11px/1 ui-monospace,Consolas,monospace;letter-spacing:.18em;color:var(--ac);border:1px solid var(--ac);border-radius:99px;padding:6px 12px}
+h1{margin:14px 0 4px;font-size:clamp(34px,6vw,52px);line-height:1.2}
+.sub{margin:0;color:var(--mu);font-size:18px}
+.lay{margin:14px 0 0;font-size:13px;color:var(--mu)}
+.lay b{color:var(--tx);font-weight:600}
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:820px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--p);border:1px solid var(--ln);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.hd{display:flex;gap:12px;align-items:flex-start}
+.num{font:700 13px/1 ui-monospace,Consolas,monospace;color:var(--ai);background:var(--ac);border-radius:8px;padding:7px 8px}
+h2{margin:0;font-size:18px;line-height:1.4}
+.dr{margin:0;font:12px/1.4 ui-monospace,Consolas,monospace;color:var(--ac);letter-spacing:.06em}
+.ds{margin:0;color:var(--mu);font-size:14px}
+label{display:block;font-size:13px;color:var(--mu)}
+textarea{display:block;width:100%;min-height:104px;margin-top:6px;padding:10px 12px;resize:vertical;background:var(--p2);color:var(--tx);border:1px solid var(--ln);border-radius:10px;font:inherit}
+textarea:focus{outline:2px solid var(--ac);outline-offset:1px;border-color:transparent}
+.out{background:#171a20}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-size:14px;cursor:pointer;color:var(--tx);background:var(--p2);border:1px solid var(--ln);border-radius:9px;padding:7px 14px}
+button:hover{border-color:var(--mu)}
+button.pri{background:var(--ac);color:var(--ai);border-color:var(--ac);font-weight:700}
+.nt{font-size:13px;color:var(--mu)}
+.nt:empty{display:none}
+.nt div{margin-top:4px}
+.chip{display:inline-block;min-width:1.6em;text-align:center;margin:0 3px;padding:0 6px;border-radius:6px;background:#3a2a1a;color:var(--wr);font-family:ui-monospace,Consolas,monospace}
+.map{margin-top:18px;background:var(--p);border:1px solid var(--ln);border-radius:12px;padding:12px 16px;color:var(--mu);font-size:14px}
+summary{cursor:pointer;color:var(--tx)}
+#km{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#km span{background:var(--p2);border:1px solid var(--ln);border-radius:6px;padding:2px 8px;font:14px ui-monospace,Consolas,monospace;color:var(--tx)}
+footer{margin-top:26px;text-align:center;color:var(--mu);font-size:13px}
+#st{font-family:ui-monospace,Consolas,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<span class="tag">LOCAL TOOL</span>
+<h1>فكّ التخبيص</h1>
+<p class="sub">استعد النص الذي كنت تقصده، دون إعادة كتابته.</p>
+<p class="lay">التخطيط المعتمد: <b dir="ltr">Arabic (101) ⇄ English (US) QWERTY</b></p>
+</header>
+<main class="grid" id="grid"></main>
+<details class="map"><summary>خريطة المفاتيح المعتمدة</summary><div id="km" dir="ltr"></div></details>
+<footer>المعالجة تتم داخل متصفحك فقط، ولا يُرسل أي نص إلى خادم.<br><span id="st" dir="ltr"></span></footer>
+</div>
+<script>
+/* خريطة المفاتيح: كل مفتاح في US QWERTY ↔ ما يطبعه على Arabic (101).
+   الأرقام والرموز !@#$%^&*()-_=+\\| متطابقة في التخطيطين فتبقى كما هي.
+   لتعديل التخطيط عدّل السلسلتين التاليتين فقط (نفس الترتيب، الفاصل مسافة). */
+const NORM=["`qwertyuiop[]asdfghjkl;'zxcvbnm,./","ذ ض ص ث ق ف غ ع ه خ ح ج د ش س ي ب ل ا ت ن م ك ط ئ ء ؤ ر \u0644\u0627 ى ة و ز ظ"];
+const SHFT=['~QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?',"\u0651 \u064E \u064B \u064F \u064C \u0644\u0625 \u0625 \u2018 \u00F7 \u00D7 \u061B < > \u0650 \u064D ] [ \u0644\u0623 \u0623 \u0640 \u060C / : \" ~ \u0652 } { \u0644\u0622 \u0622 \u2019 , . \u061F"];
+const E2A={},A2E={},LIG={};
+[NORM,SHFT].forEach(([us,ar])=>{const t=ar.split(" ");[...us].forEach((k,i)=>{E2A[k]=t[i];(t[i].length>1?LIG:A2E)[t[i]]=k})});
+const KEEP=new Set([..."0123456789!@#$%^&*()-_=+\\|"]);
+
+function conv(text,toAr){
+  let out="",lig=0;const bad={};
+  const flag=c=>{if(!KEEP.has(c)&&!/\s/.test(c))bad[c]=(bad[c]||0)+1};
+  const cs=[...text];
+  for(let i=0;i<cs.length;i++){
+    const c=cs[i];
+    if(toAr){
+      if(c in E2A){out+=E2A[c]}else{out+=c;flag(c)}
+      continue;
+    }
+    const two=c+(cs[i+1]||"");
+    if(two in LIG){out+=LIG[two];i++;lig++;continue}
+    if(c in A2E){out+=A2E[c]}else{out+=c;flag(c)}
+  }
+  return{out,bad,lig};
+}
+
+function render(el,r){
+  el.replaceChildren();
+  const k=Object.keys(r.bad);
+  if(k.length){
+    const d=document.createElement("div");
+    d.append("⚠ حروف لم تُحوَّل وبقيت كما هي: ");
+    k.forEach(c=>{const s=document.createElement("span");s.className="chip";s.textContent=r.bad[c]>1?c+" ×"+r.bad[c]:c;d.append(s)});
+    el.append(d);
+  }
+  if(r.lig){
+    const d=document.createElement("div");
+    d.textContent="ℹ تم تفسير "+r.lig+" من «لا/لأ/لإ/لآ» كمفتاح واحد (B وأخواته)؛ قد تكون في الأصل مفتاحين مثل G+H.";
+    el.append(d);
+  }
+}
+
+async function copy(el,b){
+  if(!el.value)return;
+  let done=false;
+  try{await navigator.clipboard.writeText(el.value);done=true}
+  catch(e){el.select();try{done=document.execCommand("copy")}catch(_){}
+  }
+  const t=b.textContent;
+  b.textContent=done?"تم النسخ ✓":"حدّد النص وانسخه يدويًا";
+  setTimeout(()=>{b.textContent=t},1500);
+}
+
+const MODES=[
+ {n:"01",t:"إصلاح نص عربي مكتوب بتخطيط إنجليزي",d:"English → Arabic",s:"النص خرج بحروف إنجليزية لأنك نسيت تبديل اللغة؟ الصقه لتستعيد الحروف العربية على نفس المفاتيح.",toAr:true,out:"rtl",p:"مثال: lvpfh",ex:"lvpfh"},
+ {n:"02",t:"إصلاح نص إنجليزي مكتوب بتخطيط عربي",d:"Arabic → English",s:"كتبت بالإنجليزية والتخطيط عربي؟ الصق الحروف العربية لتستعيد الحروف الإنجليزية المقصودة.",toAr:false,out:"ltr",p:"مثال: اثممخ",ex:"اثممخ"},
+ {n:"03",t:"تحويل العربية إلى تخبيص إنجليزي",d:"Arabic → English",s:"اتجاه عكسي: نص عربي سليم يتحول إلى الحروف الإنجليزية الموجودة على مفاتيحه.",toAr:false,out:"ltr",p:"مثال: مرحبا",ex:"مرحبا"},
+ {n:"04",t:"تحويل الإنجليزية إلى تخبيص عربي",d:"English → Arabic",s:"اتجاه عكسي: نص إنجليزي سليم يتحول إلى الحروف العربية الموجودة على مفاتيحه.",toAr:true,out:"rtl",p:"مثال: hello",ex:"hello"}
+];
+const grid=document.getElementById("grid");
+MODES.forEach(m=>{
+  const c=document.createElement("section");c.className="card";
+  c.innerHTML='<div class="hd"><span class="num">'+m.n+'</span><div><h2>'+m.t+'</h2><p class="dr" dir="ltr">'+m.d+'</p></div></div>'
+   +'<p class="ds">'+m.s+'</p>'
+   +'<label>النص المُدخل<textarea class="in" dir="auto" spellcheck="false" placeholder="'+m.p+'"></textarea></label>'
+   +'<div class="bar"><button class="ex" type="button">مثال</button><button class="clr" type="button">مسح</button></div>'
+   +'<label>النتيجة<textarea class="out" readonly dir="'+m.out+'" spellcheck="false"></textarea></label>'
+   +'<div class="bar"><button class="cp pri" type="button">نسخ النتيجة</button></div>'
+   +'<div class="nt" aria-live="polite"></div>';
+  const $=s=>c.querySelector(s),inp=$(".in"),out=$(".out"),nt=$(".nt");
+  const run=()=>{const r=conv(inp.value,m.toAr);out.value=r.out;render(nt,r)};
+  inp.addEventListener("input",run);
+  $(".clr").onclick=()=>{inp.value="";run();inp.focus()};
+  $(".ex").onclick=()=>{inp.value=m.ex;run()};
+  $(".cp").onclick=e=>copy(out,e.currentTarget);
+  grid.append(c);
+});
+
+const km=document.getElementById("km");
+Object.keys(E2A).forEach(k=>{
+  const v=E2A[k],s=document.createElement("span");
+  s.textContent=k+" → "+(/^[\u064B-\u0652]$/.test(v)?"\u25CC"+v:v);
+  km.append(s);
+});
+
+function selfTest(){
+  let ok=0,n=0;const fail=[];
+  const chk=(c,l)=>{n++;if(c)ok++;else fail.push(l)};
+  Object.keys(E2A).forEach(k=>chk(conv(E2A[k],false).out===k,k));
+  [["hgh","\u0627\u0644\u0627",0],["lvpfh","\u0645\u0631\u062D\u0628\u0627",1],["hello","\u0627\u062B\u0645\u0645\u062E",1]].forEach(([e,a,back])=>{
+    chk(conv(e,true).out===a,e);
+    if(back)chk(conv(a,false).out===e,a);
+  });
+  chk(conv("a s\n\td  f",true).out==="\u0634 \u0633\n\t\u064A  \u0628","whitespace");
+  return{ok,n,fail};
+}
+const T=selfTest();
+document.getElementById("st").textContent=(T.fail.length?"⚠ ":"✓ ")+"keymap self-test: "+T.ok+"/"+T.n+(T.fail.length?" — failed: "+T.fail.join(" "):"");
+console.log("keymap self-test",T);
+</script>
+</body>
+</html>
